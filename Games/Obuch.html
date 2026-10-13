@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Мия и загадки Доброго леса</title>
+<style>
+:root{--bg1:#d8f3dc;--bg2:#fff3c4;--card:#ffffff;--ink:#2b3a2f;--accent:#52b788;--soft:#ecf8ef;--tip:#fff8e1;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#16301f;--bg2:#2a2a14;--card:#243a2c;--ink:#f1f7ee;--accent:#74c69d;--soft:#1d3326;--tip:#3a3418}}
+:root[data-theme="dark"]{--bg1:#16301f;--bg2:#2a2a14;--card:#243a2c;--ink:#f1f7ee;--accent:#74c69d;--soft:#1d3326;--tip:#3a3418}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{font-family:"Trebuchet MS","Comic Sans MS",system-ui,sans-serif;color:var(--ink);background:linear-gradient(var(--bg1),var(--bg2)) fixed;background-color:var(--bg1);text-align:center;user-select:none}
+.wrap{max-width:560px;margin:0 auto;padding:12px 14px 24px}
+h1{font-size:22px;margin:6px 0}
+.path{display:flex;justify-content:space-between;align-items:center;background:var(--card);border-radius:24px;padding:8px 10px;margin:8px 0;font-size:26px;position:relative}
+.path span{opacity:.35;transition:.3s}
+.path span.on{opacity:1;transform:scale(1.25)}
+.path span.done{opacity:.9}
+.btn{font:inherit;font-size:22px;font-weight:700;border:0;border-radius:28px;background:var(--accent);color:#fff;padding:16px 30px;margin:10px 4px;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.18)}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.btn.small{font-size:18px;padding:10px 18px;background:var(--card);color:var(--ink)}
+.card{background:var(--card);border-radius:28px;padding:16px;margin:10px 0;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.friend{font-size:84px;line-height:1;animation:bob 2.4s ease-in-out infinite}
+.say{font-size:22px;line-height:1.35;margin:10px 4px}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.opt{font-size:60px;padding:14px 0;border:4px solid var(--soft);border-radius:26px;background:var(--soft);cursor:pointer;transition:.25s}
+.opt:active{transform:scale(.92)}
+.opt.ok{border-color:#ffb703;background:#fff3c4;animation:pop .6s}
+.opt.no{animation:shake .4s;opacity:.25;pointer-events:none}
+.tip{background:var(--tip);border-radius:20px;padding:10px 14px;font-size:15px;line-height:1.35;margin-top:10px;text-align:left}
+.cnt{display:inline-block;padding:2px 4px;margin:2px;border-radius:18px;cursor:pointer;transition:.25s;filter:grayscale(.6);opacity:.75}
+.cnt.lit{background:#fff3c4;filter:none;opacity:1;transform:scale(1.2);box-shadow:0 0 0 4px #ffb703}
+.opt img{width:76px;height:76px;object-fit:cover;border-radius:18px;display:block;margin:0 auto;pointer-events:none}
+.hide{display:none}
+.big{font-size:100px;animation:bob 1.8s ease-in-out infinite}
+.stars{font-size:34px;letter-spacing:4px}
+.top{display:flex;justify-content:space-between}
+@keyframes bob{50%{transform:translateY(-8px)}}
+@keyframes pop{40%{transform:scale(1.25) rotate(-6deg)}}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.conf{position:fixed;top:-40px;font-size:28px;pointer-events:none;animation:fall 2.2s linear forwards;z-index:9}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+
+.opts.hab-options{gap:8px}.hab-options .opt{font:inherit;padding:6px;border-radius:19px;overflow:hidden}.hab-options .opt svg{display:block;width:100%;height:auto;border-radius:12px}.hab-label{display:block;font-size:16px;font-weight:700;margin:8px 0 4px}.hab-options .opt:focus-visible{outline:4px solid #2579b9;outline-offset:2px}
+.photo-dialog{border:0;border-radius:24px;padding:18px;background:var(--card);color:var(--ink);width:min(94vw,620px);max-height:92dvh;overflow:auto;text-align:center;box-shadow:0 12px 60px #0006}.photo-dialog::backdrop{background:#152a24b8}.photo-dialog img{display:block;width:100%;max-height:54vh;object-fit:contain;border-radius:16px;background:var(--soft)}.photo-dialog h2{margin:0 0 12px;font-size:24px}.photo-dialog p{font-size:18px;line-height:1.4}.photo-dialog .credit{font-size:13px}.photo-dialog a{color:var(--ink)}.photo-dialog .btn{font-size:18px;padding:12px 20px}.photo-state{padding:35px 10px;font-size:18px}.photo-dialog [hidden]{display:none!important}
+@media(max-width:380px){.hab-label{font-size:13px}.opts.hab-options{gap:5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><button class="btn small" id="snd">🔊 Звук</button><button class="btn small" id="again">↻ Сначала</button></div>
+  <h1>🌲 Мия и загадки Доброго леса 🌳</h1>
+  <div class="path" id="path"></div>
+
+  <div id="start" class="card">
+    <div class="big">🧒</div>
+    <div class="say">Привет! Я Мия. Пойдём по тропе к старому Дубу: загадки, цвета, лесные звери, где они живут или счёт до 10: выбирай!</div>
+    <div class="tip">👨‍👩‍👧 <b>Родителям:</b> играйте вместе. Читайте загадку, давайте малышу время подумать и показать пальчиком. Здесь нет проигрыша: ошибиться — это нормально, просто пробуем ещё.</div>
+    <button class="btn" id="go">🧩 Загадки</button><button class="btn" id="goc" style="background:#f77f00">🎨 Изучаем цвета</button><button class="btn" id="goz" style="background:#8d5524">🦊 Лесные звери</button><button class="btn" id="gon" style="background:#3a86ff">🔢 Счёт до 10</button><button class="btn" id="goh" style="background:#2d6a4f">🏡 Где живут звери</button>
+  </div>
+
+  <div id="game" class="card hide">
+    <div class="friend" id="fr"></div>
+    <div class="say" id="q"></div>
+    <button class="btn small" id="hear">🔊 Послушать ещё раз</button>
+    <div class="opts" id="opts"></div>
+    <div class="tip" id="tip"></div>
+    <button class="btn hide" id="next">Дальше по тропе ➜</button>
+  </div>
+
+  <div id="end" class="card hide">
+    <div class="big">🌳</div>
+    <div class="stars">⭐⭐⭐⭐⭐⭐</div>
+    <div class="say">Мы дошли до старого Дуба! Все загадки отгаданы. Вы молодцы — вместе, дружно и бережно!</div>
+    <div class="tip">👨‍👩‍👧 <b>Родителям:</b> обнимитесь и спросите малыша: «Какая загадка тебе понравилась больше всех?» Можно вместе показать, как ёжик фыркает, а сова ухает.</div>
+    <button class="btn" id="replay">Играть снова</button>
+  </div>
+</div>
+
+<dialog id="habPhoto" class="photo-dialog" aria-labelledby="photoTitle"><h2 id="photoTitle"></h2><div id="photoState" class="photo-state" role="status">Загружаем фотографию…</div><img id="wildPhoto" alt="" hidden><p id="photoCaption"></p><p class="credit"><a id="photoCredit" target="_blank" rel="noopener noreferrer" hidden>Фото и сведения об авторе — Wikimedia Commons</a></p><button class="btn small" id="photoRetry" hidden>Попробовать загрузить ещё раз</button><button class="btn" id="photoClose">Продолжить игру ➜</button></dialog>
+<script>
+var RID=[
+{f:"🦔",who:"Ёжик",q:"Я колючий, я в иголках, фыр-фыр-фыр в траве. Кто я?",a:"🦔",w:["🐟","🐘"],t:"Попросите малыша пофыркать, как ёжик: «Фыр-фыр!»"},
+{f:"🐰",who:"Зайка",q:"Длинные ушки, прыг-скок-скок! Люблю морковку. Кто я?",a:"🐰",w:["🐮","🐸"],t:"Попрыгайте вместе, как зайчики!"},
+{f:"🐻",who:"Мишка",q:"Я большой и косолапый, люблю сладкий мёд. Кто я?",a:"🐻",w:["🐥","🐠"],t:"Покажите, как мишка идёт вразвалочку и рычит: «Р-р-р!»"},
+{f:"🦉",who:"Совушка",q:"Ночью не сплю, а днём сплю. Ух-ух-ух! Кто я?",a:"🦉",w:["🐶","🐷"],t:"Спросите: «Как ухает сова?» и ухните вместе."},
+{f:"🌳",who:"Старый Дуб",q:"Осенью листочки жёлтые летят. Какое это время года?",a:"🍂",w:["🌸","❄️"],t:"Найдите дома или за окном что-нибудь жёлтое или красное."},
+{f:"🧒",who:"Мия",q:"Белый снег, лепим снеговика! Какое это время года?",a:"❄️",w:["☀️","🌸"],t:"Покажите, как мы дрожим от холода: «Бр-р-р!»"}
+];
+var RCOL=[
+{f:"🍎",who:"Мия",q:"Яблочко красное! Найди красный цвет.",a:"🔴",w:["🟡","🔵"],t:"Найдите дома что-нибудь красное и назовите: «Красный!»"},
+{f:"🍌",who:"Мия",q:"Банан жёлтый! Найди жёлтый цвет.",a:"🟡",w:["🔴","🟢"],t:"Что ещё бывает жёлтым? Солнышко, цыплёнок, лимон."},
+{f:"🌲",who:"Мия",q:"Ёлочка зелёная! Найди зелёный цвет.",a:"🟢",w:["🔵","🟠"],t:"Покажите зелёную травку или листик за окном."},
+{f:"💧",who:"Мия",q:"Капелька синяя! Найди синий цвет.",a:"🔵",w:["🔴","🟡"],t:"Посмотрите на небо или воду: какого они цвета?"},
+{f:"🍊",who:"Мия",q:"Апельсин оранжевый! Найди оранжевый цвет.",a:"🟠",w:["🟢","🔵"],t:"Сравните с морковкой: она тоже оранжевая!"},
+{f:"🍇",who:"Мия",q:"Виноград фиолетовый! Найди фиолетовый цвет.",a:"🟣",w:["🟠","🟡"],t:"Спросите: «А какой цвет ты любишь больше всех?»"}
+];
+var RZ=[
+{f:"🦊",who:"Лисичка",q:"Рыжая хвостом метёт, хитрая плутовка. Кто я?",a:"🦊",w:["🐟","🐮"],t:"Покажите, как лиса крадётся на цыпочках, и помашите «хвостом»."},
+{f:"🐺",who:"Волк",q:"Серый, зубастый, в лесу бродит и воет: у-у-у! Кто я?",a:"🐺",w:["🐱","🐥"],t:"Повоем вместе потихоньку: «У-у-у!» Волк в сказках не всегда злой."},
+{f:"🐿️",who:"Белочка",q:"Прыгаю по веткам, орешки грызу, хвост пушистый. Кто я?",a:"🐿️",w:["🐠","🐷"],t:"Спросите: «А где белка прячет орешки?» (в дупле, в запасах)."},
+{f:"🦌",who:"Олень",q:"У меня на голове ветки-рога. Я быстро бегу по лесу. Кто я?",a:"🦌",w:["🐔","🐸"],t:"Поднимите ладошки над головой, как рога, и «побегайте» по комнате."},
+{f:"🐗",who:"Кабан",q:"Хрю-хрю! Носом землю рою, ищу в лесу желуди. Кто я?",a:"🐗",w:["🐑","🐟"],t:"Хрюкните вместе. Чем кабан отличается от домашней свинки? Он лесной!"},
+{f:"🦫",who:"Бобрёнок",q:"Строю домик на воде из веток, зубы крепкие, хвост плоский. Кто я?",a:"🦫",w:["🐴","🐧"],t:"Расскажите: бобры строят плотины из веток. Сложите вместе башенку из кубиков."}
+];
+var RN=[
+{f:"🍎",g:"🍎",who:"Мия",q:"Посчитай яблочки пальчиком. Сколько их?",a:"1",w:["2","3"],t:"Дотроньтесь до яблока и скажите вместе: «Один!»"},
+{f:"🐞",g:"🐞🐞",who:"Мия",q:"Посчитай божьих коровок. Сколько их?",a:"2",w:["1","3"],t:"Покажите два пальчика и посчитайте: «Раз, два!»"},
+{f:"🍄",g:"🍄🍄🍄",who:"Мия",q:"Посчитай грибочки. Сколько их?",a:"3",w:["2","5"],t:"Трогайте каждый гриб по очереди и считайте вслух."},
+{f:"🌸",g:"🌸🌸🌸🌸",who:"Мия",q:"Посчитай цветочки. Сколько их?",a:"4",w:["3","6"],t:"Хлопните в ладоши столько раз, сколько цветочков."},
+{f:"🐿️",g:"🐿️🐿️🐿️🐿️🐿️",who:"Мия",q:"Посчитай белочек. Сколько их?",a:"5",w:["4","7"],t:"Покажите ладошку: пять пальчиков, как пять белочек!"},
+{f:"🍂",g:"🍂🍂🍂🍂🍂🍂",who:"Мия",q:"Посчитай листочки. Сколько их?",a:"6",w:["5","8"],t:"Попрыгайте вместе столько раз, сколько листочков."},
+{f:"⭐",g:"⭐⭐⭐⭐⭐⭐⭐",who:"Мия",q:"Посчитай звёздочки. Сколько их?",a:"7",w:["6","9"],t:"Считайте медленно и дотрагивайтесь до каждой звезды."},
+{f:"🌰",g:"🌰🌰🌰🌰🌰🌰🌰🌰",who:"Мия",q:"Посчитай жёлуди. Сколько их?",a:"8",w:["7","10"],t:"Разложите дома 8 игрушек в ряд и посчитайте их."},
+{f:"🦋",g:"🦋🦋🦋🦋🦋🦋🦋🦋🦋",who:"Мия",q:"Посчитай бабочек. Сколько их?",a:"9",w:["8","6"],t:"Если сложно, считайте вместе: ребёнок трогает, вы говорите число."},
+{f:"🌳",g:"🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎",who:"Дуб",q:"На старом Дубе выросли яблочки. Сколько их?",a:"10",w:["9","7"],t:"Десять — это все пальчики на двух руках. Покажите их вместе!"}
+];
+var ZP=[
+['🦊','лиса','Рыжая плутовка, хвост пушистый. Кто я?','Помашите «хвостом» вместе!'],
+['🐺','волк','Серый, зубастый, вою: у-у-у! Кто я?','Повойте тихонько вместе.'],
+['🐿️','белка','Прыгаю по веткам, грызу орешки. Кто я?','Покажите, как грызут орешки.'],
+['🦌','олень','У меня на голове ветки-рога. Кто я?','Ладошки над головой — это рога!'],
+['🐗','кабан','Хрю-хрю! Рою землю носом, ищу жёлуди. Кто я?','Похрюкайте вместе!'],
+['🦫','бобр','Строю домик из веток на воде, хвост плоский. Кто я?','Сложите башенку из кубиков.'],
+['🦔','ёж','Весь колючий, фыркаю в траве. Кто я?','Пофыркайте: фыр-фыр!'],
+['🐰','заяц','Длинные ушки, прыг-скок, люблю морковку. Кто я?','Попрыгайте, как зайчики!'],
+['🐻','медведь','Большой, косолапый, люблю мёд, рычу. Кто я?','Рыкните: р-р-р!'],
+['🦉','сова','Не сплю по ночам, ухаю: ух-ух! Кто я?','Поухайте вместе.'],
+['🐸','лягушка','Зелёная, прыгаю в болоте: ква-ква! Кто я?','Поквакайте и попрыгайте.'],
+['🐍','змея','Ползу без ножек, шиплю: ш-ш-ш. Кто я?','Покажите ручкой, как ползёт змейка.'],
+['🦎','ящерица','Быстро бегаю по камушкам, хвостик длинный. Кто я?','Побегайте пальчиками по столу.'],
+['🐛','гусеница','Ползу по листику, ем зелень, стану бабочкой. Кто я?','Поползите «гусеничкой» по дивану.'],
+['🐝','пчела','Жужжу над цветами, делаю мёд. Кто я?','Пожужжите: ж-ж-ж!'],
+['🐜','муравей','Совсем маленький, строю большую кучу из хвоинок. Кто я?','Найдите самую маленькую вещь в комнате.'],
+['🦋','бабочка','Крылышки яркие, порхаю над цветами. Кто я?','Помашите руками, как крылышками.'],
+['🐌','улитка','Ползу медленно, домик ношу на спине. Кто я?','Походите очень-очень медленно.'],
+['🐞','божья коровка','Красная в чёрную точечку, ползу по листику. Кто я?','Посчитайте точки на картинке.'],
+['🕷️','паук','Плету паутинку, у меня восемь лапок. Кто я?','Покажите восемь пальчиков.'],
+['🦇','летучая мышь','Сплю вниз головой, летаю ночью. Кто я?','Спросите: «Когда спят летучие мыши?»'],
+['🐁','мышка','Маленькая, серая, пищу: пи-пи! Кто я?','Попискивайте тоненьким голосом.'],
+['🦡','барсук','Мордочка в белую полоску, живу в норе. Кто я?','Спрячьтесь вместе «в норку» под одеяло.'],
+['🦝','енот','Полосатый хвост, мою лапками еду. Кто я?','Потрите ладошки, как енот.'],
+['🦦','выдра','Ловко плаваю в речке, ловлю рыбку. Кто я?','Покажите, как плывут: ручки вперёд.'],
+['🦗','кузнечик','Зелёный, прыгаю в траве, стрекочу. Кто я?','Прыгните далеко-далеко!'],
+['🦅','орёл','Большая птица, парю высоко в небе. Кто я?','Раскиньте руки-крылья и «парите».'],
+['🦆','утка','Плаваю в пруду, говорю: кря-кря! Кто я?','Покрякайте и поплавайте «по луже».'],
+['🦢','лебедь','Вся белая, шея длинная, плыву по озеру. Кто я?','Вытяните шею, как лебедь.'],
+['🐦','птичка','Живу в гнезде, летаю, пою: чик-чирик! Кто я?','Почирикайте вместе!']
+];
+var zq=[],zoo=false,NM={};
+ZP.forEach(function(z){NM[z[0]]=z[1]});
+function mkZoo(){if(zq.length<6)zq=shuffle(ZP.map(function(_,k){return k}));var p6=zq.splice(0,6);return p6.map(function(k){var z=ZP[k];var w=shuffle(ZP.filter(function(x,j){return j!=k&&x[0]!=z[0]}).map(function(x){return x[0]})).slice(0,2);return{f:z[0],who:z[1].charAt(0).toUpperCase()+z[1].slice(1),q:z[2],a:z[0],w:w,t:z[3]}})}
+var H=['🌳','🕳️','⛰️','💧','🥚','🌼','🕸️'];
+var HB={};[['дупло','в дупле','Дупло — это дырка в дереве. Сделайте руками круг, как дупло.'],['нора','в норе','Нора — домик под землёй. Спрячьте игрушку «в норку» под подушку.'],['берлога','в берлоге','Берлога — тёплая пещера медведя. Закутайтесь вместе в одеяло.'],['пруд','у воды','Покажите, как плывёт утка, и побрызгайте пальчиками.'],['гнездо','в гнезде','Гнездо — домик из веточек. Сделайте гнёздышко из подушек.'],['луг','на лугу','На лугу растут цветы и трава. Найдите дома цветочек.'],['паутина','в паутине','Нарисуйте пальчиком паутинку в воздухе.']].forEach(function(x,k){HB[H[k]]=x});
+var HA={'белка':0,'лиса':1,'барсук':1,'мышка':1,'ёж':1,'медведь':2,'лягушка':3,'утка':3,'лебедь':3,'бобр':3,'выдра':3,'птичка':4,'бабочка':5,'кузнечик':5,'паук':6},HN=Object.keys(HA),NE={},hq=[];
+ZP.forEach(function(z){NE[z[1]]=z[0]});
+function mkHab(){if(hq.length<6)hq=shuffle(HN.slice());var a=hq.splice(0,6).map(function(n){var h=H[HA[n]];var w=shuffle([0,1,2,3,6].map(function(k){return H[k]}).filter(function(x){return x!=h})).slice(0,2);return{f:NE[n],who:n.charAt(0).toUpperCase()+n.slice(1),q:'Где живёт '+n+'? Выбери домик!',a:h,w:w,t:HB[h][2]}});a.hab=true;return a}
+function msg(b,ok){var r=R[i],t=b.dataset.k||b.textContent;if(R.hab){var h=HB[t];return ok?'Правильно! '+r.who+' живёт '+h[1]+'! Молодец!':'Это '+h[0]+'. '+r.who+' там не живёт. Давай попробуем ещё!'}if(zoo)return ok?'Это '+NM[t]+'! Правильно! Молодец!':'Это '+NM[t]+'. Давай попробуем ещё!';return ok?'Ура! Правильно! Молодец!':'Ой! Давай попробуем ещё!'}
+H=['🌳','🕳️','⛰️','🌿','💧','🏞️','🏚️','🌊','🥚','🌼','🌾','🕸️','🍂','🍯','🏔️','🍃','🌱','🌻','🌲','🌽'];
+var HG=[0,1,1,2,2,2,2,2,4,3,3,4,3,4,1,3,3,3,0,3];
+HB={};[['дупло','в дупле','Дупло — дырка в дереве. Сделайте руками круг!'],['нора','в норе','Спрячьте игрушку «в норку» под подушку.'],['берлога','в берлоге','Закутайтесь вместе в одеяло, как в берлоге.'],['болото','на болоте','Попрыгайте, как лягушки по кочкам.'],['пруд','в пруду','Побрызгайте пальчиками, как капельки.'],['озеро','на озере','Покажите, как плывёт лебедь с длинной шеей.'],['хатка','в хатке','Постройте домик из кубиков, как бобёр.'],['река','в реке','Покажите ладошкой, как течёт речка.'],['гнездо','в гнезде','Сделайте гнёздышко из подушек.'],['луг','на лугу','Найдите дома цветочек на картинке.'],['трава','в траве','Пощекочите малыша пёрышком, как травинкой.'],['паутина','в паутине','Нарисуйте пальчиком паутинку в воздухе.'],['листики','под листиками','Спрячьте мягкую игрушку под салфеткой.'],['улей','в улье','Пожужжите вместе: ж-ж-ж!'],['скала','на скале','Встаньте на цыпочки — вы на высокой скале!'],['листик','на листике','Покажите «листик» ладошкой.'],['кустик','под кустиком','Спрячьтесь вместе за подушку.'],['цветок','на цветке','Сложите ладошки как бутон и раскройте.'],['лес','в лесу','Крикните «Ау!», как в большом лесу.'],['поле','в поле','Покажите руками, как колышется колос.']].forEach(function(x,k){HB[H[k]]=x});
+HA={'белка':0,'лиса':1,'медведь':2,'лягушка':3,'утка':4,'лебедь':5,'бобр':6,'выдра':7,'птичка':8,'бабочка':9,'кузнечик':10,'паук':11,'ёж':12,'пчела':13,'орёл':14,'улитка':15,'заяц':16,'божья коровка':17,'олень':18,'мышка':19};
+HN=Object.keys(HA);hq=[];
+function mkHab(){if(hq.length<6)hq=shuffle(HN.slice());var a=hq.splice(0,6).map(function(n){var k=HA[n],h=H[k];var w=shuffle(H.filter(function(x,j){return HG[j]!=HG[k]})).slice(0,2);return{f:NE[n],who:n.charAt(0).toUpperCase()+n.slice(1),q:'Где живёт '+n+'? Выбери домик!',a:h,w:w,t:HB[h][2]}});a.hab=true;return a}
+
+var HAB_ART=["<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M64 120 L67 32 L96 26 L102 120\" fill=\"#8c6040\"/><path d=\"M75 110 L80 42 M91 114 L87 40\" stroke=\"#65432d\" stroke-width=\"3\"/><circle cx=\"80\" cy=\"20\" r=\"38\" fill=\"#578540\"/><ellipse cx=\"84\" cy=\"73\" rx=\"17\" ry=\"23\" fill=\"#382b23\"/><ellipse cx=\"84\" cy=\"73\" rx=\"20\" ry=\"26\" fill=\"none\" stroke=\"#b08752\" stroke-width=\"4\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M0 95 Q75 22 160 96 V120 H0Z\" fill=\"#a78253\"/><ellipse cx=\"83\" cy=\"86\" rx=\"28\" ry=\"24\" fill=\"#423026\"/><path d=\"M55 84 Q81 51 111 84\" fill=\"none\" stroke=\"#d5b57e\" stroke-width=\"6\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M15 107 L29 45 L71 23 L105 40 L148 105Z\" fill=\"#8c8b7c\"/><path d=\"M48 107 Q49 57 83 59 Q115 58 118 107Z\" fill=\"#342d25\"/><path d=\"M53 111 L115 111\" stroke=\"#c4a574\" stroke-width=\"6\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M0 82 Q35 73 75 87 T160 80 V120 H0Z\" fill=\"#6aafcc\"/><path d=\"M10 98 H42 M64 108 H107 M118 94 H149\" stroke=\"#d9f5ff\" stroke-width=\"3\"/><ellipse cx=\"73\" cy=\"93\" rx=\"20\" ry=\"9\" fill=\"#7b9944\"/><path d=\"M24 109 V35 M37 108 V45 M134 111 V33\" stroke=\"#657b37\" stroke-width=\"4\"/><path d=\"M24 36 V55 M134 34 V57\" stroke=\"#75553a\" stroke-width=\"8\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M0 82 Q35 73 75 87 T160 80 V120 H0Z\" fill=\"#6aafcc\"/><path d=\"M10 98 H42 M64 108 H107 M118 94 H149\" stroke=\"#d9f5ff\" stroke-width=\"3\"/><path d=\"M18 101 V44 M29 105 V53\" stroke=\"#5b813a\" stroke-width=\"4\"/><ellipse cx=\"105\" cy=\"88\" rx=\"25\" ry=\"8\" fill=\"#76a94d\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M0 77 L36 31 L71 76 L112 38 L160 78\" fill=\"#98aa95\"/><path d=\"M0 82 Q35 73 75 87 T160 80 V120 H0Z\" fill=\"#6aafcc\"/><path d=\"M10 98 H42 M64 108 H107 M118 94 H149\" stroke=\"#d9f5ff\" stroke-width=\"3\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M0 82 Q35 73 75 87 T160 80 V120 H0Z\" fill=\"#6aafcc\"/><path d=\"M10 98 H42 M64 108 H107 M118 94 H149\" stroke=\"#d9f5ff\" stroke-width=\"3\"/><path d=\"M30 102 Q47 36 113 60 L136 104Z\" fill=\"#766040\"/><path d=\"M35 99 L75 59\" stroke=\"#bb9761\" stroke-width=\"5\"/><path d=\"M48 99 L88 72\" stroke=\"#bb9761\" stroke-width=\"5\"/><path d=\"M61 99 L101 68\" stroke=\"#bb9761\" stroke-width=\"5\"/><path d=\"M74 99 L114 64\" stroke=\"#bb9761\" stroke-width=\"5\"/><path d=\"M87 99 L127 60\" stroke=\"#bb9761\" stroke-width=\"5\"/><path d=\"M100 99 L140 73\" stroke=\"#bb9761\" stroke-width=\"5\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M87 44 Q30 72 85 88 Q138 102 72 120 H119 Q160 91 107 77 Q65 66 113 44Z\" fill=\"#72b6d4\"/><path d=\"M82 82 L99 86 M91 105 L112 109\" stroke=\"#d6f1fb\" stroke-width=\"3\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M0 91 L160 74\" stroke=\"#886341\" stroke-width=\"13\"/><path d=\"M34 65 Q77 105 127 62 L115 91 Q75 117 42 88Z\" fill=\"#99754c\"/><ellipse cx=\"80\" cy=\"64\" rx=\"46\" ry=\"14\" fill=\"#634d36\"/><ellipse cx=\"66\" cy=\"62\" rx=\"9\" ry=\"13\" fill=\"#f1e7c6\"/><ellipse cx=\"87\" cy=\"60\" rx=\"9\" ry=\"13\" fill=\"#f1e7c6\"/><path d=\"M40 83 L108 98 M49 96 L125 76\" stroke=\"#bd955b\" stroke-width=\"3\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M80 110 V57 M80 91 Q48 67 43 83 Q56 106 80 101 M80 80 Q109 56 117 76 Q106 96 80 94\" fill=\"#538941\" stroke=\"#538941\" stroke-width=\"4\"/><ellipse cx=\"80\" cy=\"33\" rx=\"14\" ry=\"23\" fill=\"#ecadba\" transform=\"rotate(0 80 49)\"/><ellipse cx=\"80\" cy=\"33\" rx=\"14\" ry=\"23\" fill=\"#ecadba\" transform=\"rotate(60 80 49)\"/><ellipse cx=\"80\" cy=\"33\" rx=\"14\" ry=\"23\" fill=\"#ecadba\" transform=\"rotate(120 80 49)\"/><ellipse cx=\"80\" cy=\"33\" rx=\"14\" ry=\"23\" fill=\"#ecadba\" transform=\"rotate(180 80 49)\"/><ellipse cx=\"80\" cy=\"33\" rx=\"14\" ry=\"23\" fill=\"#ecadba\" transform=\"rotate(240 80 49)\"/><ellipse cx=\"80\" cy=\"33\" rx=\"14\" ry=\"23\" fill=\"#ecadba\" transform=\"rotate(300 80 49)\"/><circle cx=\"80\" cy=\"49\" r=\"14\" fill=\"#efc34c\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M15 120 Q-5 77 -1 60 Q27 89 23 120\" fill=\"#54883e\"/><path d=\"M33 120 Q13 77 17 48 Q45 89 41 120\" fill=\"#54883e\"/><path d=\"M51 120 Q31 77 35 66 Q63 89 59 120\" fill=\"#54883e\"/><path d=\"M69 120 Q49 77 53 54 Q81 89 77 120\" fill=\"#54883e\"/><path d=\"M87 120 Q67 77 71 72 Q99 89 95 120\" fill=\"#54883e\"/><path d=\"M105 120 Q85 77 89 60 Q117 89 113 120\" fill=\"#54883e\"/><path d=\"M123 120 Q103 77 107 48 Q135 89 131 120\" fill=\"#54883e\"/><path d=\"M141 120 Q121 77 125 66 Q153 89 149 120\" fill=\"#54883e\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M0 0 L160 120 M160 0 L0 120 M80 0 V120 M0 60 H160\" stroke=\"#fdfdf5\" stroke-width=\"2\"/><ellipse cx=\"80\" cy=\"60\" rx=\"16\" ry=\"11\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2\"/><ellipse cx=\"80\" cy=\"60\" rx=\"32\" ry=\"22\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2\"/><ellipse cx=\"80\" cy=\"60\" rx=\"50\" ry=\"35\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2\"/><ellipse cx=\"80\" cy=\"60\" rx=\"69\" ry=\"48\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><ellipse cx=\"38\" cy=\"85\" rx=\"25\" ry=\"12\" fill=\"#be7338\" transform=\"rotate(25 38 85)\"/><ellipse cx=\"80\" cy=\"93\" rx=\"25\" ry=\"12\" fill=\"#d6a644\" transform=\"rotate(-22 80 93)\"/><ellipse cx=\"116\" cy=\"82\" rx=\"25\" ry=\"12\" fill=\"#995f32\" transform=\"rotate(40 116 82)\"/><ellipse cx=\"70\" cy=\"69\" rx=\"25\" ry=\"12\" fill=\"#ab8b40\" transform=\"rotate(10 70 69)\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M64 120 L67 32 L96 26 L102 120\" fill=\"#8c6040\"/><path d=\"M75 110 L80 42 M91 114 L87 40\" stroke=\"#65432d\" stroke-width=\"3\"/><circle cx=\"80\" cy=\"20\" r=\"38\" fill=\"#578540\"/><path d=\"M113 36 Q155 38 150 78 Q152 98 112 94 Q92 77 100 57Z\" fill=\"#bf9147\"/><path d=\"M103 57 H149 M101 70 H151 M103 83 H150\" stroke=\"#9a7036\" stroke-width=\"3\"/><ellipse cx=\"124\" cy=\"81\" rx=\"10\" ry=\"7\" fill=\"#413025\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M7 118 L44 48 L65 67 L97 16 L153 118Z\" fill=\"#90968e\"/><path d=\"M97 16 L80 58 L112 50Z\" fill=\"#d7d7c5\"/><path d=\"M62 112 L97 55 L110 109\" fill=\"#747c76\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M35 100 Q19 32 128 22 Q140 91 35 100Z\" fill=\"#548b35\"/><path d=\"M35 100 L118 31 M62 76 L56 51 M82 59 L111 67\" stroke=\"#b5d77e\" stroke-width=\"3\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M78 120 V74 M78 103 L48 67 M78 92 L112 57\" stroke=\"#725939\" stroke-width=\"6\"/><circle cx=\"40\" cy=\"65\" r=\"29\" fill=\"#648a39\"/><circle cx=\"79\" cy=\"45\" r=\"29\" fill=\"#799e46\"/><circle cx=\"117\" cy=\"66\" r=\"29\" fill=\"#58803c\"/><circle cx=\"78\" cy=\"79\" r=\"29\" fill=\"#638e3d\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M80 110 V57 M80 91 Q48 67 43 83 Q56 106 80 101 M80 80 Q109 56 117 76 Q106 96 80 94\" fill=\"#538941\" stroke=\"#538941\" stroke-width=\"4\"/><ellipse cx=\"80\" cy=\"33\" rx=\"14\" ry=\"23\" fill=\"#ecadba\" transform=\"rotate(0 80 49)\"/><ellipse cx=\"80\" cy=\"33\" rx=\"14\" ry=\"23\" fill=\"#ecadba\" transform=\"rotate(60 80 49)\"/><ellipse cx=\"80\" cy=\"33\" rx=\"14\" ry=\"23\" fill=\"#ecadba\" transform=\"rotate(120 80 49)\"/><ellipse cx=\"80\" cy=\"33\" rx=\"14\" ry=\"23\" fill=\"#ecadba\" transform=\"rotate(180 80 49)\"/><ellipse cx=\"80\" cy=\"33\" rx=\"14\" ry=\"23\" fill=\"#ecadba\" transform=\"rotate(240 80 49)\"/><ellipse cx=\"80\" cy=\"33\" rx=\"14\" ry=\"23\" fill=\"#ecadba\" transform=\"rotate(300 80 49)\"/><circle cx=\"80\" cy=\"49\" r=\"14\" fill=\"#efc34c\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><path d=\"M30 117 V51\" stroke=\"#796041\" stroke-width=\"7\"/><path d=\"M30 15 L1 91 H59Z\" fill=\"#527b42\"/><path d=\"M79 117 V51\" stroke=\"#796041\" stroke-width=\"7\"/><path d=\"M79 15 L50 91 H108Z\" fill=\"#355f40\"/><path d=\"M130 117 V51\" stroke=\"#796041\" stroke-width=\"7\"/><path d=\"M130 15 L101 91 H159Z\" fill=\"#577b3d\"/></svg>", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 120\"><rect width=\"160\" height=\"120\" fill=\"#dcedee\"/><path d=\"M0 85 Q40 67 80 84 T160 79 V120 H0Z\" fill=\"#87ab56\"/><rect y=\"77\" width=\"160\" height=\"43\" fill=\"#d6b856\"/><path d=\"M23 118 V44\" stroke=\"#967935\" stroke-width=\"3\"/><ellipse cx=\"18\" cy=\"48\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(-35 18 48)\"/><ellipse cx=\"28\" cy=\"48\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(35 28 48)\"/><ellipse cx=\"18\" cy=\"60\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(-35 18 60)\"/><ellipse cx=\"28\" cy=\"60\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(35 28 60)\"/><ellipse cx=\"18\" cy=\"72\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(-35 18 72)\"/><ellipse cx=\"28\" cy=\"72\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(35 28 72)\"/><path d=\"M51 118 V44\" stroke=\"#967935\" stroke-width=\"3\"/><ellipse cx=\"46\" cy=\"48\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(-35 46 48)\"/><ellipse cx=\"56\" cy=\"48\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(35 56 48)\"/><ellipse cx=\"46\" cy=\"60\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(-35 46 60)\"/><ellipse cx=\"56\" cy=\"60\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(35 56 60)\"/><ellipse cx=\"46\" cy=\"72\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(-35 46 72)\"/><ellipse cx=\"56\" cy=\"72\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(35 56 72)\"/><path d=\"M80 118 V44\" stroke=\"#967935\" stroke-width=\"3\"/><ellipse cx=\"75\" cy=\"48\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(-35 75 48)\"/><ellipse cx=\"85\" cy=\"48\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(35 85 48)\"/><ellipse cx=\"75\" cy=\"60\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(-35 75 60)\"/><ellipse cx=\"85\" cy=\"60\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(35 85 60)\"/><ellipse cx=\"75\" cy=\"72\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(-35 75 72)\"/><ellipse cx=\"85\" cy=\"72\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(35 85 72)\"/><path d=\"M109 118 V44\" stroke=\"#967935\" stroke-width=\"3\"/><ellipse cx=\"104\" cy=\"48\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(-35 104 48)\"/><ellipse cx=\"114\" cy=\"48\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(35 114 48)\"/><ellipse cx=\"104\" cy=\"60\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(-35 104 60)\"/><ellipse cx=\"114\" cy=\"60\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(35 114 60)\"/><ellipse cx=\"104\" cy=\"72\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(-35 104 72)\"/><ellipse cx=\"114\" cy=\"72\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(35 114 72)\"/><path d=\"M137 118 V44\" stroke=\"#967935\" stroke-width=\"3\"/><ellipse cx=\"132\" cy=\"48\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(-35 132 48)\"/><ellipse cx=\"142\" cy=\"48\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(35 142 48)\"/><ellipse cx=\"132\" cy=\"60\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(-35 132 60)\"/><ellipse cx=\"142\" cy=\"60\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(35 142 60)\"/><ellipse cx=\"132\" cy=\"72\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(-35 132 72)\"/><ellipse cx=\"142\" cy=\"72\" rx=\"5\" ry=\"10\" fill=\"#e3c66c\" transform=\"rotate(35 142 72)\"/></svg>"];
+var HAB_LABELS=["Дупло", "Нора", "Берлога", "Болото", "Пруд", "Озеро", "Хатка бобра", "Река", "Гнездо", "Луг", "Трава", "Паутина", "Листья", "Улей", "Скала", "Листик", "Куст", "Цветок", "Лес", "Поле"];
+var WILD_PAGES={"белка": "Red squirrel", "лиса": "Red fox", "медведь": "Brown bear", "лягушка": "Common frog", "утка": "Mallard", "лебедь": "Mute swan", "бобр": "Eurasian beaver", "выдра": "Eurasian otter", "птичка": "Great tit", "бабочка": "Aglais urticae", "кузнечик": "Tettigonia viridissima", "паук": "Araneus diadematus", "ёж": "European hedgehog", "пчела": "Western honey bee", "орёл": "Golden eagle", "улитка": "Helix pomatia", "заяц": "European hare", "божья коровка": "Coccinella septempunctata", "олень": "Red deer", "мышка": "Wood mouse"};
+var photoCache={},photoToken=0,currentPhotoAnimal='';
+function wildlifePhoto(n,refresh){
+ if(!refresh&&photoCache[n])return photoCache[n];
+ var controller=new AbortController();var timer=setTimeout(function(){controller.abort()},16000);
+ var url='https://en.wikipedia.org/w/api.php?origin=*&action=query&format=json&prop=pageimages&piprop=thumbnail|name&pithumbsize=1000&titles='+encodeURIComponent(WILD_PAGES[n]);
+ var req=fetch(url,{signal:controller.signal}).then(function(r){if(!r.ok)throw Error('network');return r.json()}).then(function(data){var page=Object.values(data.query.pages)[0];if(!page.thumbnail||!page.pageimage)throw Error('no photo');return{url:page.thumbnail.source,credit:'https://commons.wikimedia.org/wiki/File:'+encodeURIComponent(page.pageimage)}}).finally(function(){clearTimeout(timer)});
+ photoCache[n]=req;req.catch(function(){if(photoCache[n]===req)delete photoCache[n]});return req;
+}
+function closeWildPhoto(){photoToken++;$('habPhoto').close();$('wildPhoto').onload=null;$('wildPhoto').onerror=null;}
+function openWildPhoto(n,refresh){
+ currentPhotoAnimal=n;var token=++photoToken,dlg=$('habPhoto'),img=$('wildPhoto');
+ $('photoTitle').textContent='Молодец! Посмотри на животное';$('photoCaption').textContent=n.charAt(0).toUpperCase()+n.slice(1)+' — '+HB[R[i].a][1]+'.';
+ img.hidden=true;img.alt='Фотография: '+n;img.onload=null;img.onerror=null;img.removeAttribute('src');$('photoCredit').hidden=true;$('photoRetry').hidden=true;$('photoState').hidden=false;$('photoState').textContent='Загружаем настоящую фотографию…';if(!dlg.open)dlg.showModal();
+ function fail(){if(token!==photoToken)return;$('photoState').hidden=false;$('photoState').textContent='Не получилось загрузить фото. Проверьте интернет и попробуйте ещё раз.';$('photoRetry').hidden=false;img.hidden=true;}
+ wildlifePhoto(n,refresh).then(function(p){if(token!==photoToken)return;img.onload=function(){if(token!==photoToken)return;img.hidden=false;$('photoState').hidden=true;$('photoCredit').href=p.credit;$('photoCredit').hidden=false;};img.onerror=fail;img.src=p.url;}).catch(fail);
+}
+$('photoClose').onclick=closeWildPhoto;$('photoRetry').onclick=function(){openWildPhoto(currentPhotoAnimal,true)};
+$('habPhoto').addEventListener('cancel',function(e){e.preventDefault();closeWildPhoto()});
+
+var R=RID;
+var i=0,sound=true,done=false,cn=0;
+var NW=["","один","два","три","четыре","пять","шесть","семь","восемь","девять","десять"];
+function $(x){return document.getElementById(x)}
+function shuffle(a){for(var k=a.length-1;k>0;k--){var j=Math.floor(Math.random()*(k+1));var t=a[k];a[k]=a[j];a[j]=t}return a}
+function say(t){if(!sound||!window.speechSynthesis)return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="ru-RU";u.rate=.85;u.pitch=1.2;speechSynthesis.speak(u)}catch(e){}}
+var ac;function beep(f,d){if(!sound)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.type="sine";g.gain.value=.12;o.connect(g);g.connect(ac.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.stop(ac.currentTime+d)}catch(e){}}
+function path(){var h="🧒";var p="";for(var k=0;k<R.length;k++){p+='<span class="'+(k<i?'done':k==i?'on':'')+'">'+(k<i?"⭐":R[k].f)+'</span>'}p+='<span class="'+(i>=R.length?'on':'')+'">🌳</span>';$("path").innerHTML=p}
+function show(id){["start","game","end"].forEach(function(x){$(x).classList.toggle("hide",x!==id)})}
+function confetti(){var e=["⭐","🌸","🍂","✨","🌟"];for(var k=0;k<18;k++){var s=document.createElement("div");s.className="conf";s.textContent=e[k%e.length];s.style.left=Math.random()*95+"vw";s.style.animationDelay=Math.random()*.6+"s";document.body.appendChild(s);setTimeout(function(n){n.remove()},3000,s)}}
+function round(){
+  if(i>=R.length){path();show("end");confetti();say("Ура! Мы дошли до старого Дуба! Вы молодцы!");[523,659,784,1046].forEach(function(f,k){setTimeout(beep,k*180,f,.4)});return}
+  var r=R[i];done=false;path();show("game");
+  var F=$("fr");F.innerHTML="";F.style.animation=r.g?"none":"";F.style.fontSize=r.g?(r.g.length>8?"40px":"54px"):"";cn=0;if(r.g){var it=r.g.match(/\p{Extended_Pictographic}\uFE0F?/gu)||[r.f];it.forEach(function(e){var s=document.createElement("span");s.className="cnt";s.textContent=e;s.onclick=function(){if(s.classList.contains("lit"))return;cn++;s.classList.add("lit");beep(440+cn*40,.15);say(NW[cn]);if(cn==it.length)setTimeout(function(){say("Всего "+NW[cn]+". Нажми цифру!")},1100)};F.appendChild(s)})}else{F.textContent=r.f}$("q").textContent=r.who+": "+r.q+(r.g?" Нажимай на каждый и считай!":"");$("tip").innerHTML="👨‍👩‍👧 <b>Родителям:</b> "+r.t;$("next").classList.add("hide");
+  var o=$("opts");o.innerHTML="";o.classList.toggle("hab-options",!!R.hab);if(R.hab)wildlifePhoto(r.who.toLowerCase()).catch(function(){});
+  shuffle([r.a].concat(r.w)).forEach(function(e){var b=document.createElement(R.hab?"button":"div");b.className="opt";if(R.hab){var hi=H.indexOf(e);b.type="button";b.dataset.k=e;b.setAttribute("aria-label",HAB_LABELS[hi]);b.innerHTML=HAB_ART[hi]+'<span class="hab-label">'+HAB_LABELS[hi]+'</span>';b.querySelector("svg").setAttribute("aria-hidden","true")}else{b.textContent=e}b.onclick=function(){pick(b,e===r.a)};o.appendChild(b)});
+  say(r.q);
+}
+function pick(b,ok){
+  if(done)return;
+  if(ok){done=true;b.classList.add("ok");beep(659,.2);setTimeout(beep,150,880,.35);confetti();say(msg(b,true));if(R.hab)openWildPhoto(R[i].who.toLowerCase());$("next").classList.remove("hide");[].forEach.call(document.querySelectorAll(".opt"),function(x){if(x!==b)x.style.opacity=.2})}
+  else{b.classList.add("no");beep(220,.25);say(msg(b,false))}
+}
+$("go").onclick=function(){zoo=false;R=RID;i=0;beep(523,.2);round()};
+$("goc").onclick=function(){zoo=false;R=RCOL;i=0;beep(523,.2);round()};
+$("goz").onclick=function(){zoo=true;R=mkZoo();i=0;beep(523,.2);round()};
+$("goh").onclick=function(){zoo=false;R=mkHab();i=0;beep(523,.2);round()};
+$("gon").onclick=function(){zoo=false;R=RN;i=0;beep(523,.2);round()};
+$("next").onclick=function(){i++;round()};
+$("hear").onclick=function(){say(R[i].q)};
+$("again").onclick=function(){i=0;if(window.speechSynthesis)speechSynthesis.cancel();path();show("start")};
+$("replay").onclick=function(){i=0;if(R.hab)R=mkHab();else if(zoo)R=mkZoo();round()};
+$("snd").onclick=function(){sound=!sound;this.textContent=sound?"🔊 Звук":"🔇 Тихо";if(!sound&&window.speechSynthesis)speechSynthesis.cancel()};
+path();
+</script>
+</body>
+</html>
