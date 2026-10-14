@@ -3,9 +3,11 @@
 
   function el(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
 
-  var fab=el('button','fb-fab','✉️ Обратная связь');
+  var fab=el('button','fb-fab');
   fab.type='button';
   fab.setAttribute('aria-haspopup','dialog');
+  fab.setAttribute('aria-label','Открыть форму обратной связи');
+  fab.innerHTML='<span class="fb-fab-icon" aria-hidden="true">🌿</span><span class="fb-fab-text">Написать нам</span>';
 
   var dlg=document.createElement('dialog');
   dlg.className='fb-dialog';
@@ -15,7 +17,7 @@
   form.enctype='multipart/form-data';
 
   var title=el('h2','fb-title','Обратная связь');
-  var sub=el('p','fb-sub','Расскажите, что понравилось или что нужно исправить. Сообщение придёт разработчику.');
+  var sub=el('p','fb-sub','Расскажите, что понравилось или что можно улучшить. Мы обязательно ответим.');
   var status=el('p','fb-status','');
 
   function field(labelText,input){
